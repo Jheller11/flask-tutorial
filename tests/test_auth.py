@@ -1,16 +1,19 @@
 import pytest
 from flask import g, session
-from flaskr.db import get_db()
+from flaskr.db import get_db
 
 
 def test_register(client, app):
     assert client.get('/auth/register').status_code == 200
-    respose = client.post(
-        '/auth/register', data={'username': 'a', 'password': 'a'})
+    response = client.post(
+        '/auth/register', data={'username': 'a', 'password': 'a'}
+    )
     assert 'http://localhost/auth/login' == response.headers['Location']
 
     with app.app_context():
-        assert get_db().execute("select * from user where username = 'a'").fetchone() is not None
+        assert get_db().execute(
+            "select * from user where username = 'a'",
+        ).fetchone() is not None
 
 
 @pytest.mark.parametrize(('username', 'password', 'message'), (
